@@ -12,3 +12,4 @@ aiofiles
 motor
 pymongo
 dnspython
+python-jose[cryptography]
