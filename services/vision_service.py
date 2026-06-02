@@ -6,14 +6,12 @@ from services.gemini_service import MODEL_NAME
 
 def analyze_image_question(image, question):
     """
-    Analyze a PIL Image using Gemini Vision
+    Analyze a PIL image using Gemini Vision
     """
 
     try:
-        # Create Gemini model
         model = genai.GenerativeModel(MODEL_NAME)
 
-        # Send image + prompt to Gemini
         response = model.generate_content(
             [
                 question,
@@ -21,8 +19,11 @@ def analyze_image_question(image, question):
             ]
         )
 
-        return response.text
+        if hasattr(response, "text"):
+            return response.text
+
+        return str(response)
 
     except Exception as e:
-        print(f"GEMINI FAILED: {str(e)}")
-        raise Exception(str(e))
+        print(f"GEMINI FAILED: {e}")
+        raise
