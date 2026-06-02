@@ -31,11 +31,28 @@ async def analyze_vision(
             # DEFAULT QUESTION
             if not question.strip():
 
-                question = """
-                Analyze this crop or plant image in detail.
-                Detect diseases, health issues,
-                severity, and recommendations.
-                """
+            question = """
+            Analyze this crop image.
+        
+            Return ONLY valid JSON in this format:
+        
+            {
+              "crop_name": "",
+              "health_status": "",
+              "confidence": "",
+              "disease_detected": "",
+              "severity": "",
+              "symptoms": [],
+              "recommendations": [],
+              "fertilizer_suggestions": [],
+              "risk_level": "",
+              "summary": ""
+            }
+        
+            Do not return markdown.
+            Do not return explanations.
+            Return JSON only.
+            """
 
             response = analyze_image_question(
                 image,
