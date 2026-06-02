@@ -1,7 +1,10 @@
-from fastapi import APIRouter
-from fastapi import UploadFile
-from fastapi import File
-from fastapi import Form
+from fastapi import (
+    APIRouter,
+    UploadFile,
+    File,
+    Form,
+    HTTPException
+)
 
 from PIL import Image
 
@@ -14,8 +17,8 @@ router = APIRouter(
     tags=["Vision"]
 )
 
-@router.post("/analyze")
 
+@router.post("/analyze")
 async def analyze_vision(
     file: UploadFile = File(...),
     question: str = Form("")
@@ -23,21 +26,21 @@ async def analyze_vision(
 
     try:
 
-        image = Image.open(file.file)
+        with Image.open(file.file) as image:
 
-        # DEFAULT QUESTION
-        if not question:
+            # DEFAULT QUESTION
+            if not question.strip():
 
-            question = """
-            Analyze this crop or plant image in detail.
-            Detect diseases, health issues,
-            severity, and recommendations.
-            """
+                question = """
+                Analyze this crop or plant image in detail.
+                Detect diseases, health issues,
+                severity, and recommendations.
+                """
 
-        response = analyze_image_question(
-            image,
-            question
-        )
+            response = analyze_image_question(
+                image,
+                question
+            )
 
         return {
             "response": response
@@ -45,6 +48,7 @@ async def analyze_vision(
 
     except Exception as e:
 
-        return {
-            "error": str(e)
-        }
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
